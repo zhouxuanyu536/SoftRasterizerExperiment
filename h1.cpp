@@ -28,9 +28,15 @@ struct PhongShader : IShader {
     }
 
     std::pair<bool, TGAColor> fragment(const vec3 bar) const override {
-        vec2 st = uv[0] * bar[0] + uv[1] * bar[1] + uv[2] * bar[2];
-        vec4 n = normalize(nrm[0] * bar[0] + nrm[1] * bar[1] + nrm[2] * bar[2]);
-        vec4 fragPos = pos[0] * bar[0] + pos[1] * bar[1] + pos[2] * bar[2];
+    	
+    	double w0 = 1.0 / pos[0].w;
+    	double w1 = 1.0 / pos[1].w;
+    	double w2 = 1.0 / pos[2].w;
+
+    	double weight_sum = bar[0]*w0 + bar[1]*w1 + bar[2]*w2;
+        vec2 st = (uv[0]*bar[0]*w0 + uv[1]*bar[1]*w1 + uv[2]*bar[2]*w2) / weight_sum;
+    	vec4 fragPos = (pos[0]*bar[0]*w0 + pos[1]*bar[1]*w1 + pos[2]*bar[2]*w2) / weight_sum;
+    	vec4 n = normalize((nrm[0]*bar[0]*w0 + nrm[1]*bar[1]*w1 + nrm[2]*bar[2]*w2) / weight_sum);
 
         vec4 e1 = pos[1] - pos[0];
         vec4 e2 = pos[2] - pos[0];
