@@ -1,0 +1,2 @@
+# SoftRasterizerExperiment
+参考tinyrenderer 实现的软光栅模块
